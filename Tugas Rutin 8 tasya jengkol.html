@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tugas Rutin 8 — Inventaris Gudang</title>
+<style>
+:root{--bg:#f3f5fa;--cd:#fff;--ink:#14213d;--mu:#5f6b85;--ln:#d8deec;--br:#ea580c;--soft:#fff0e6;--nv:#14213d;--dg:#c62828;--ok:#15803d;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1224;--cd:#141d36;--ink:#eaf0ff;--mu:#9aa8cc;--ln:#27345a;--br:#fb923c;--soft:#2a2030;--nv:#0b1224;--dg:#ff8a80;--ok:#6ee7a0}}
+:root[data-theme="dark"]{--bg:#0b1224;--cd:#141d36;--ink:#eaf0ff;--mu:#9aa8cc;--ln:#27345a;--br:#fb923c;--soft:#2a2030;--nv:#0b1224;--dg:#ff8a80;--ok:#6ee7a0}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.top{background:var(--nv);color:#fff;padding:14px 16px 16px;border-radius:0 0 22px 22px}
+.top h1{margin:0;font-size:20px}.top p{margin:2px 0 0;font-size:13px;opacity:.75}
+.wrap{max-width:720px;margin:0 auto;padding:14px 16px}
+.kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.kpi div{background:rgba(255,255,255,.1);border-radius:12px;padding:8px 10px;font-size:11px}.kpi b{display:block;font-size:15px;color:#ffd7b8}
+button,input,select{font:inherit}
+.btn{border:1px solid transparent;border-radius:12px;padding:10px 14px;font-weight:700;min-height:44px;cursor:pointer}
+.pri{background:var(--br);color:#fff}.gh{background:transparent;border-color:var(--ln);color:var(--ink)}.dg{background:transparent;border-color:var(--dg);color:var(--dg)}
+.sm{min-height:38px;padding:6px 12px;font-size:14px}
+input,select{width:100%;padding:11px;border:1px solid var(--ln);border-radius:12px;background:var(--cd);color:var(--ink);min-height:44px}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:4px 0 10px}
+.chip{white-space:nowrap;border:1px solid var(--ln);background:var(--cd);color:var(--ink);border-radius:99px;padding:6px 12px;font-size:13px}
+.chip.on{background:var(--br);border-color:var(--br);color:#fff}
+.it{background:var(--cd);border:1px solid var(--ln);border-left:5px solid var(--br);border-radius:14px;padding:12px;margin-bottom:10px}
+.it.low{border-left-color:var(--dg)}
+.top2{display:flex;justify-content:space-between;gap:8px}.nm{font-weight:700}.pc{font-weight:700;white-space:nowrap}
+.mt{font-size:13px;color:var(--mu);margin:2px 0 8px}
+.bar{height:8px;background:var(--ln);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--ok)}.low .bar i{background:var(--dg)}
+.acts{display:flex;gap:8px;margin-top:10px}.acts .btn{flex:1}
+.card{background:var(--cd);border:1px solid var(--ln);border-radius:14px;padding:14px;margin-bottom:12px}
+h2{font-size:16px;margin:0 0 8px}.sub{color:var(--mu);font-size:13px}
+.pg{display:flex;gap:6px;justify-content:center;margin:10px 0}.pg .on{background:var(--br);color:#fff;border-color:var(--br)}
+.sql{background:#0b0f1c;color:#9be29b;border-radius:12px;padding:10px;font:12px/1.5 monospace;white-space:pre-wrap;max-height:200px;overflow:auto}
+.sql .e{color:#ff8a80}.sql .c{color:#ffd166}
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--cd);border-top:1px solid var(--ln);display:flex;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:5}
+.nav button{flex:1;border:0;background:none;color:var(--mu);font-size:12px;padding:6px 0;border-radius:10px}
+.nav button.on{color:var(--br);font-weight:800;background:var(--soft)}
+.nav span{display:block;font-size:20px}
+.bg{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-end;justify-content:center;z-index:10}
+.sheet{background:var(--cd);width:100%;max-width:720px;border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:92%;overflow:auto}
+label{display:block;font-weight:600;font-size:13px;margin:10px 0 4px}.er{color:var(--dg);font-size:12.5px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--bg);padding:11px 15px;border-radius:12px;font-weight:600;font-size:14px;z-index:20;max-width:90%}
+.toast.err{background:var(--dg);color:#fff}
+.tb{border-collapse:collapse;width:100%;font-size:13px}.tb td,.tb th{border-bottom:1px solid var(--ln);padding:6px;text-align:left}
+.erd{border:1px solid var(--ln);border-radius:12px;padding:10px;margin:8px 0;background:var(--cd);font:12.5px/1.6 monospace}
+.erd b{color:var(--br)}
+pre{background:var(--cd);border:1px solid var(--ln);border-radius:12px;padding:10px;overflow-x:auto;font-size:12.5px}
+details{margin:6px 0}summary{font-weight:700;padding:8px 0}
+</style></head><body>
+<div class="top"><h1>🏭 Inventaris Gudang</h1><p>Tugas Rutin 8 — RDBMS & PDO (demo browser; data sementara)</p><div class="kpi" id="kpi"></div></div>
+<div class="wrap" id="v"></div>
+<div class="wrap" style="padding-top:0"><div class="card"><h2>🧾 Log SQL (prepared statement)</h2><div class="sql" id="sql"></div></div></div>
+<div class="nav" id="nav"></div><div id="modal"></div><div id="toast"></div>
+<script>
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const rp=n=>'Rp '+Math.round(n).toLocaleString('id-ID');
+const cats=['Laptop','Printer','Jaringan','Aksesoris','Penyimpanan'].map((n,i)=>({id:i+1,name:n}));
+const sups=['PT Medan Teknologi','CV Sinar Elektro','PT Nusa Digital','UD Komputer Jaya'].map((n,i)=>({id:i+1,name:n}));
+let P=[[ 'Laptop Acer Aspire 5',1,1,7800000,9],['Printer Epson L3210',2,2,2450000,14],['Router Mikrotik hAP',3,3,690000,4],['Switch 8 Port',3,3,230000,22],['Mouse Gaming',4,4,175000,35],['Keyboard Wireless',4,4,320000,3],['SSD 1TB',5,1,1150000,17],['Harddisk Eksternal 2TB',5,2,1350000,8],['Kabel LAN Cat6 (box)',3,4,720000,11]].map((a,i)=>({id:i+1,name:a[0],category_id:a[1],supplier_id:a[2],price:a[3],stock:a[4]}));
+let M=[],nid=10,mid=1,tab='prod',q='',cf=0,sort='name',page=1,sqlLog=[];const PER=5,MAX=40;
+const cat=id=>cats.find(c=>c.id===id)?.name,sup=id=>sups.find(s=>s.id===id)?.name;
+const now=()=>new Date().toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+function sql(s,cls){sqlLog.unshift(`<span class="${cls||''}">[${now()}] ${esc(s)}</span>`);sqlLog=sqlLog.slice(0,14)}
+function toast(m,err){const t=document.getElementById('toast');t.innerHTML=`<div class="toast${err?' err':''}">${esc(m)}</div>`;clearTimeout(toast.h);toast.h=setTimeout(()=>t.innerHTML='',2600)}
+const TABS={prod:['📦','Produk'],stok:['🔄','Stok'],skema:['🗺','Skema'],kode:['💻','Kode']};
+const V={
+prod:()=>{let r=P.filter(p=>(!cf||p.category_id===cf)&&(p.name+cat(p.category_id)+sup(p.supplier_id)).toLowerCase().includes(q.toLowerCase()));
+ r.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):sort==='price'?b.price-a.price:a.stock-b.stock);
+ const pg=Math.max(1,Math.ceil(r.length/PER));page=Math.min(page,pg);
+ return `<div class="two" style="grid-template-columns:2fr 1fr;margin-bottom:8px"><input type="search" id="q" placeholder="🔍 cari nama / supplier" value="${esc(q)}"><select id="so"><option value="name" ${sort==='name'?'selected':''}>A–Z</option><option value="price" ${sort==='price'?'selected':''}>Termahal</option><option value="stock" ${sort==='stock'?'selected':''}>Stok terendah</option></select></div>
+ <div class="chips"><button class="chip ${!cf?'on':''}" data-cf="0">Semua</button>${cats.map(c=>`<button class="chip ${cf===c.id?'on':''}" data-cf="${c.id}">${c.name}</button>`).join('')}</div>
+ <button class="btn pri" style="width:100%;margin-bottom:10px" data-add="1">+ Tambah produk</button>`+
+ (r.slice((page-1)*PER,page*PER).map(p=>`<div class="it ${p.stock<10?'low':''}"><div class="top2"><div class="nm">${esc(p.name)}</div><div class="pc">${rp(p.price)}</div></div><div class="mt">${cat(p.category_id)} · ${esc(sup(p.supplier_id))} · stok <b>${p.stock}</b>${p.stock<10?' ⚠️ menipis':''}</div><div class="bar"><i style="width:${Math.min(100,p.stock/MAX*100)}%"></i></div><div class="acts"><button class="btn gh sm" data-edit="${p.id}">Edit</button><button class="btn dg sm" data-del="${p.id}">Hapus</button></div></div>`).join('')||'<div class="card sub">Tidak ada produk cocok.</div>')+
+ `<div class="pg">${Array.from({length:pg},(_,i)=>`<button class="btn gh sm ${i+1===page?'on':''}" data-pg="${i+1}">${i+1}</button>`).join('')}</div>`},
+stok:()=>`<div class="card"><h2>Barang masuk / keluar</h2><div class="sub">Memakai transaksi: beginTransaction → INSERT movement + UPDATE stok → commit. Jika stok kurang → rollBack.</div>
+ <label>Produk</label><select id="mp">${P.map(p=>`<option value="${p.id}">${esc(p.name)} (stok ${p.stock})</option>`).join('')}</select>
+ <div class="two"><div><label>Jenis</label><select id="mt"><option value="in">Masuk (+)</option><option value="out">Keluar (−)</option></select></div><div><label>Jumlah</label><input id="mq" type="number" min="1" value="5"></div></div>
+ <button class="btn pri" style="width:100%;margin-top:12px" data-mv="1">Jalankan transaksi</button></div>
+ <div class="card"><h2>Riwayat stock_movements</h2>${M.length?`<table class="tb"><tr><th>#</th><th>produk</th><th>jenis</th><th>qty</th></tr>${M.slice().reverse().slice(0,8).map(m=>`<tr><td>${m.id}</td><td>${esc(P.find(p=>p.id===m.product_id)?.name||'(dihapus)')}</td><td>${m.type}</td><td>${m.qty}</td></tr>`).join('')}</table>`:'<div class="sub">Belum ada transaksi.</div>'}</div>`,
+skema:()=>`<div class="card"><h2>Skema 3NF</h2><div class="sub">Nama kategori & supplier dipisah ke tabel sendiri (tidak berulang di products).</div>
+ <div class="erd"><b>categories</b>: <u>id</u> PK, name</div>
+ <div class="erd"><b>suppliers</b>: <u>id</u> PK, name</div>
+ <div class="erd"><b>products</b>: <u>id</u> PK, name, category_id FK→categories, supplier_id FK→suppliers, price DECIMAL(12,2), stock INT</div>
+ <div class="erd"><b>stock_movements</b>: <u>id</u> PK, product_id FK→products, type ENUM(in,out), qty INT, created_at</div></div>
+ <div class="card"><h2>Isi tabel referensi</h2><div class="sub">categories: ${cats.map(c=>c.id+'='+c.name).join(', ')}<br>suppliers: ${sups.map(s=>s.id+'='+s.name).join(', ')}</div></div>`,
+kode:()=>[['Database.php (Singleton)',`class Database {
+    private static ?PDO $pdo = null;
+    public static function get(): PDO {
+        if (self::$pdo === null) {
+            self::$pdo = new PDO('mysql:host=127.0.0.1;dbname=inventaris;charset=utf8mb4',
+                'root', '', [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                ]);
+        }
+        return self::$pdo;
+    }
+}`],['CRUD prepared statements',`$db = Database::get();
+// CREATE
+$db->prepare('INSERT INTO products (name,category_id,supplier_id,price,stock) VALUES (?,?,?,?,?)')
+   ->execute([$name,$cat,$sup,$price,$stock]);
+// READ + search
+$st = $db->prepare('SELECT p.*, c.name AS category FROM products p
+    JOIN categories c ON c.id = p.category_id WHERE p.name LIKE ?');
+$st->execute(["%$q%"]);  $rows = $st->fetchAll();
+// UPDATE
+$db->prepare('UPDATE products SET name=?, price=?, stock=? WHERE id=?')->execute([...]);
+// DELETE
+$db->prepare('DELETE FROM products WHERE id = ?')->execute([$id]);`],['Transaksi stok',`try {
+    $db->beginTransaction();
+    $db->prepare('INSERT INTO stock_movements (product_id,type,qty) VALUES (?,?,?)')
+       ->execute([$id,$type,$qty]);
+    $sign = $type === 'in' ? '+' : '-';
+    $db->prepare("UPDATE products SET stock = stock $sign ? WHERE id = ?")->execute([$qty,$id]);
+    $db->commit();
+} catch (Throwable $e) {
+    $db->rollBack();
+}`]].map(([t,c])=>`<details ${t.startsWith('Data')?'open':''}><summary>${t}</summary><pre>${esc(c)}</pre></details>`).join('')};
+function render(){
+ document.getElementById('kpi').innerHTML=`<div>Jenis<b>${P.length}</b></div><div>Total stok<b>${P.reduce((a,p)=>a+p.stock,0)}</b></div><div>Nilai aset<b>${rp(P.reduce((a,p)=>a+p.price*p.stock,0)/1e6).replace('Rp ','')}jt</b></div>`;
+ document.getElementById('v').innerHTML=V[tab]();
+ document.getElementById('nav').innerHTML=Object.entries(TABS).map(([k,[i,l]])=>`<button class="${k===tab?'on':''}" data-tab="${k}"><span>${i}</span>${l}</button>`).join('');
+ document.getElementById('sql').innerHTML=sqlLog.join('\n')||'Belum ada query. Coba tambah/edit/hapus produk.';
+ const qi=document.getElementById('q');if(qi)qi.oninput=e=>{q=e.target.value;page=1;render();const n=document.getElementById('q');n.focus();n.setSelectionRange(99,99)};
+ const so=document.getElementById('so');if(so)so.onchange=e=>{sort=e.target.value;render()}}
+function form(id){const p=id?P.find(x=>x.id===id):{name:'',category_id:'',supplier_id:'',price:'',stock:0};
+ const opt=(a,s)=>'<option value="">Pilih…</option>'+a.map(x=>`<option value="${x.id}" ${x.id===s?'selected':''}>${esc(x.name)}</option>`).join('');
+ document.getElementById('modal').innerHTML=`<div class="bg" id="bg"><div class="sheet"><h2>${id?'Edit':'Tambah'} produk</h2>
+ <label>Nama</label><input id="fn" maxlength="150" value="${esc(p.name)}"><div class="er" id="e-n"></div>
+ <div class="two"><div><label>Kategori</label><select id="fc">${opt(cats,p.category_id)}</select><div class="er" id="e-c"></div></div><div><label>Supplier</label><select id="fs">${opt(sups,p.supplier_id)}</select><div class="er" id="e-s"></div></div></div>
+ <div class="two"><div><label>Harga</label><input id="fp" type="number" min="0" value="${p.price}"><div class="er" id="e-p"></div></div><div><label>Stok</label><input id="fk" type="number" min="0" value="${p.stock}"><div class="er" id="e-k"></div></div></div>
+ <div class="two" style="margin-top:16px"><button class="btn gh" id="cx">Batal</button><button class="btn pri" id="sv">Simpan</button></div></div></div>`;
+ const close=()=>document.getElementById('modal').innerHTML='';
+ cx.onclick=close;bg.onclick=e=>{if(e.target.id==='bg')close()};
+ sv.onclick=()=>{const n=fn.value.trim(),c=+fc.value,s=+fs.value,pr=fp.value,k=fk.value;
+  const E={n:n?'':'Nama wajib diisi.',c:c?'':'Pilih kategori.',s:s?'':'Pilih supplier.',p:(pr===''||+pr<0)?'Harga ≥ 0.':'',k:(k===''||+k<0||!Number.isInteger(+k))?'Stok bilangan bulat ≥ 0.':''};
+  let bad=0;for(const x in E){document.getElementById('e-'+x).textContent=E[x];if(E[x])bad=1}if(bad)return;
+  if(id){Object.assign(p,{name:n,category_id:c,supplier_id:s,price:+pr,stock:+k});sql(`UPDATE products SET name=?, category_id=?, supplier_id=?, price=?, stock=? WHERE id=${id}  -- ["${n}",${c},${s},${pr},${k}]`);toast('Produk diperbarui.')}
+  else{P.push({id:nid++,name:n,category_id:c,supplier_id:s,price:+pr,stock:+k});sql(`INSERT INTO products (name,category_id,supplier_id,price,stock) VALUES (?,?,?,?,?)  -- ["${n}",${c},${s},${pr},${k}]`);toast('Produk ditambahkan.')}
+  close();render()}}
+function del(id){const p=P.find(x=>x.id===id);document.getElementById('modal').innerHTML=`<div class="bg" id="bg"><div class="sheet"><h2>Hapus produk?</h2><p>"${esc(p.name)}" akan dihapus permanen.</p><div class="two"><button class="btn gh" id="cx">Batal</button><button class="btn dg" id="ok">Hapus</button></div></div></div>`;
+ const close=()=>document.getElementById('modal').innerHTML='';cx.onclick=close;bg.onclick=e=>{if(e.target.id==='bg')close()};
+ ok.onclick=()=>{P=P.filter(x=>x.id!==id);sql(`DELETE FROM products WHERE id = ?  -- [${id}]`);toast('Produk dihapus.');close();render()}}
+function move(){const id=+mp.value,t=mt.value,n=+mq.value,p=P.find(x=>x.id===id);
+ if(!Number.isInteger(n)||n<1){toast('Jumlah harus bilangan bulat ≥ 1.',1);return}
+ sql('BEGIN TRANSACTION','c');sql(`INSERT INTO stock_movements (product_id,type,qty) VALUES (?,?,?)  -- [${id},"${t}",${n}]`);
+ if(t==='out'&&p.stock<n){sql(`UPDATE products SET stock = stock - ? WHERE id = ?  -- gagal: stok ${p.stock} < ${n}`,'e');sql('ROLLBACK  -- movement dibatalkan','e');toast('Stok tidak cukup. Transaksi di-rollback.',1);render();return}
+ p.stock+=t==='in'?n:-n;M.push({id:mid++,product_id:id,type:t,qty:n});
+ sql(`UPDATE products SET stock = stock ${t==='in'?'+':'-'} ? WHERE id = ?  -- [${n},${id}]`);sql('COMMIT','c');toast('Transaksi berhasil (commit).');render()}
+document.body.addEventListener('click',e=>{const t=e.target.closest('[data-tab],[data-cf],[data-add],[data-edit],[data-del],[data-pg],[data-mv]');if(!t)return;const d=t.dataset;
+ if(d.tab){tab=d.tab;render()}else if(d.cf!==undefined){cf=+d.cf;page=1;render()}else if(d.add)form();else if(d.edit)form(+d.edit);else if(d.del)del(+d.del);else if(d.pg){page=+d.pg;render()}else if(d.mv)move()});
+sql('SELECT * FROM products ORDER BY name  -- fetchAll()');render();
+</script></body></html>
